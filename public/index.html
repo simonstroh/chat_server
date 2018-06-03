@@ -261,7 +261,7 @@
         var message = $('<li>').text(msg.slice(msg.indexOf('⍄') + 1, msg.length))
         $('#messages').append(message)
         $('#messages').append(el)
-        document.getElementById('messages').scrollTo(0, document.body.scrollHeight)
+        document.getElementById('messages').scrollTo(0, document.getElementById('messages').scrollHeight)
       })
     })
     </script>

@@ -1,0 +1,26 @@
+{
+  "name": "react_home",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "react-dev": "webpack -d --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "http": "0.0.0",
+    "socket.io": "^2.1.1",
+    "webpack": "^4.10.2"
+  },
+  "devDependencies": {
+    "babel-loader": "^7.1.4",
+    "webpack-cli": "^3.0.1"
+  }
+}

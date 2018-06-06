@@ -7,6 +7,46 @@
     <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <style>
+    body {
+      transition: 0.3s;
+      margin: 8px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+    video {
+      background-image: none;
+      overflow: hidden;
+      border-radius: 100%;
+      width: 80px;
+      height: 80px;
+      position: absolute;
+      transition: 0.4s;
+      transition-timing-function: ease;
+      top: 343px;
+      z-index: 4;
+    }
+    video:last-of-type {
+      background-image: url('video-background.png');
+      background-position: center;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      position: absolute;
+      top: 86px;
+      z-index: 3;
+      width: 290px;
+      height: 290px;
+      border-radius: 100%;
+      transition: 0.4s;
+    }
+    video:first-of-type {
+      object-fit: cover;
+      background-image: none;
+    }
     .btns {
       display: flex;
       border-radius: 30px;
@@ -28,6 +68,16 @@
       transition: 0.2s;
       outline: none;
     }
+    button#enlarge {
+      width: 40px;
+      height: 40px;
+      background-color: none;
+      border: none;
+      border-radius: 100%;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
     button:hover {
       background-color: white;
     }
@@ -37,6 +87,12 @@
     }
     button:hover img {
       transform: scale(0.8);
+    }
+    button#enlarge:hover {
+      background-color: white;
+    }
+    button#enlarge:hover img {
+      transform: scale(1);
     }
     textarea {
       box-shadow: inset 0 0 20px 10px white;
@@ -240,29 +296,77 @@
   <body>
     <div id="app"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="PeerConnection.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="app.js"></script>
     <script>
+    function getUserMedia(callback) {
+      var hints = {
+        audio: true,
+        video: {
+          optional: [],
+          mandatory: {
+            minWidth: 1280,
+            minHeight: 720,
+            maxWidth: 1920,
+            maxHeight: 1080,
+            minAspectRatio: 1.77
+          }
+        }
+      };
+      navigator.mediaDevices.getUserMedia(hints).then(function (stream) {
+        callback(stream);
+        var video = document.createElement('video');
+        video.srcObject = stream;
+        video.controls = false;
+        video.autoplay = true;
+        video.muted = true;
+        peer.onStreamAdded({
+          mediaElement: video,
+          userid: 'self',
+          stream: stream
+        });
+      });
+    }
+    var peer = new PeerConnection('http://localhost:8989')
+    peer.onStreamAdded = function(e) {
+      document.body.appendChild(e.mediaElement)
+    }
+    console.log(peer.userid)
     $(document).ready(function() {
       var socket = io()
+      socket.emit('chat message', 'bot⍄user can be reached at ' + peer.userid)
       $('form').submit(function(e) {
         e.preventDefault()
         var text = $('#m').val()
-        if (text.length > 0)
+        if (text.length > 0) {
           var users = $('#users').text()
           var sender = users.split(' > ')
           var body = sender[0] + '⍄' + text
           socket.emit('chat message', body)
           $('#m').val('')
           console.log('Message sent!')
+        }
       })
       socket.on('chat message', function(msg) {
         var body = msg.split('⍄')
-        var el = $('<h3>').text('-' + body[0])
-        var message = $('<li>').text(msg.slice(msg.indexOf('⍄') + 1, msg.length))
-        $('#messages').append(message)
-        $('#messages').append(el)
-        document.getElementById('messages').scrollTo(0, document.getElementById('messages').scrollHeight)
+        var users = $('#users').text()
+        var sender = users.split(' > ')
+        if (body.length > 2 && body[0] !== sender[0]) {
+          msg = [body[0], body[1]].join('⍄')
+          window.offerer = body[2]
+          if (!peer.MediaStream) getUserMedia(stream => peer.addStream(stream))
+        } else if (body.length > 2 && body[0] === sender[0]) {
+          msg = [body[0], body[1]].join('⍄')
+          if (!peer.MediaStream) getUserMedia(stream => peer.addStream(stream))
+        }
+        if (body[1].length > 0) {
+          var el = $('<h3>').text('-' + body[0])
+          var message = $('<li>').text(msg.slice(msg.indexOf('⍄') + 1, msg.length))
+          $('#messages').append(message)
+          $('#messages').append(el)
+          document.getElementById('messages').scrollTo(0, document.getElementById('messages').scrollHeight)
+        }
       })
     })
     </script>

@@ -2,16 +2,31 @@ class Chat extends React.Component {
   constructor(props) {
     super(props)
     this.state ={
-
+      videoHasStarted: false
     }
+    this.requestVideoCall = this.requestVideoCall.bind(this)
+  }
+  returnSubmit(e) {
+    if (e.charCode === 13) {
+      e.preventDefault()
+      $('form').submit()
+    }
+  }
+  requestVideoCall() {
+    if (window.offerer) peer.sendParticipationRequest(window.offerer)
+    document.getElementById('pop-up').style.opacity = '0.4'
+    document.body.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'
+    var text = $('#m').val()
+    text = text + '⍄' + peer.userid
+    $('#m').val(text)
   }
   render() {
     return(
       <form action="" style={this.props.styles}>
-        <textarea id="m" />
+        <textarea id="m" onKeyPress={this.returnSubmit}/>
         <div className="btns">
           <button type="submit"><img src="chat.svg" width="22px" height="22px" /></button>
-          <button><img src="video.svg" width="22px" height="22px" /></button>
+          <button onClick={this.requestVideoCall}><img src="video.svg" width="22px" height="22px" /></button>
         </div>
       </form>
     )
@@ -61,8 +76,8 @@ class App extends React.Component {
     var el = document.createElement('p')
     el.style.color = 'transparent'
     el.style.height = '0'
-    el.innerHTML = text2 + ' > ' + text1
     el.id = 'users'
+    el.innerHTML = text2 + ' > ' + text1
     var el1 = document.createElement('h2')
     var el2 = document.createElement('h2')
     el1.innerHTML = text2.slice(0, 1)

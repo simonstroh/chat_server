@@ -19,6 +19,7 @@ class Chat extends React.Component {
     var text = $('#m').val()
     text = text + '⍄' + peer.userid
     $('#m').val(text)
+    $('form').submit()
   }
   render() {
     return(

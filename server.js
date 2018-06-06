@@ -12,6 +12,9 @@ app.get('/chat.svg', function(req, res) {
 app.get('/app.js', function(req, res) {
   res.sendFile(__dirname + '/public/app.js')
 })
+app.get('/end_call.svg', function(req, res) {
+  res.sendFile(__dirname + '/public/end_call.svg')
+})
 app.get('/chat.svg', function(req, res) {
   res.sendFile(__dirname + '/public/chat.svg')
 })

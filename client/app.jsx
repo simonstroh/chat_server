@@ -12,8 +12,36 @@ class Chat extends React.Component {
       $('form').submit()
     }
   }
-  requestVideoCall() {
-    if (window.offerer) peer.sendParticipationRequest(window.offerer)
+  renderEnlargeButton() {
+    var button = document.createElement('button')
+    button.id = 'enlarge'
+    var img = document.createElement('img')
+    img.src = 'enlarge.svg'
+    img.width = '25'
+    img.height = '25'
+    button.appendChild(img)
+    button.onclick = function() {
+
+    }
+    document.body.appendChild(button)
+  }
+  renderEndButton() {
+    var button = document.createElement('button')
+    button.id = 'end-call'
+    var img = document.createElement('img')
+    img.src = 'end_call.svg'
+    img.width = '190'
+    img.height = '38'
+    button.appendChild(img)
+    button.onclick = function() {
+
+    }
+    document.body.appendChild(button)
+  }
+  requestVideoCall(e) {
+    if (window.offerer) {
+      if (!document.getElementById(window.offerer)) peer.sendParticipationRequest(window.offerer)
+    }
     document.getElementById('pop-up').style.opacity = '0.4'
     document.body.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'
     var text = $('#m').val()

@@ -9,6 +9,9 @@ app.get('/', function(req, res) {
 app.get('/chat.svg', function(req, res) {
   res.sendFile(__dirname + '/public/chat.svg')
 })
+app.get('/answer_call.svg', function(req, res) {
+  res.sendFile(__dirname + '/public/answer_call.svg')
+})
 app.get('/app.js', function(req, res) {
   res.sendFile(__dirname + '/public/app.js')
 })
@@ -29,6 +32,9 @@ app.get('/video-background.png', function(req, res) {
 })
 app.get('/enlarge.svg', function(req, res) {
   res.sendFile(__dirname + '/public/enlarge.svg')
+})
+app.get('/shrink.svg', function(req, res) {
+  res.sendFile(__dirname + '/public/shrink.svg')
 })
 io.on('connection', function(socket) {
   console.log('a user connected');

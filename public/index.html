@@ -28,7 +28,7 @@
       width: 80px;
       height: 80px;
       position: absolute;
-      transition: 0.4s;
+      transition: 0.2s;
       transition-timing-function: ease;
       top: 343px;
       z-index: 4;
@@ -279,6 +279,19 @@
       border-bottom: 3px solid #888888;
       box-shadow: inset 0 0 20px 10px #e7e7e7;
     }
+    #answer {
+      border: none;
+      border-radius: 32px;
+      background-color: transparent;
+      width: 190px;
+      height: 38px;
+      z-index: 5;
+      outline: none;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      margin-top: 415px;
+    }
     input[type=submit] {
       display: block;
       width: 90px;
@@ -354,6 +367,7 @@
       button.appendChild(img)
       button.onclick = function() {
         peer.close()
+        peer.MediaStream = false
         document.getElementById('pop-up').style.opacity = '1'
         document.body.style.backgroundColor = 'white'
         document.getElementById('me').remove()
@@ -372,24 +386,60 @@
       img.height = '25'
       button.appendChild(img)
       button.onclick = function() {
-        // document.getElementById(window.offerer).style.top = ''
-        // document.getElementById(window.offerer).style.width = ''
-        // document.getElementById(window.offerer).style.height = ''
-        // document.getElementById(window.offerer).style.objectFit = ''
-        // document.getElementById(window.offerer).style.backgroundImage = ''
-        // document.getElementById(window.offerer).style.borderRadius = ''
-        // document.getElementById('me').style.right = ''
-        // document.getElementById('me').style.margin = ''
-        // document.getElementById('me').style.width = ''
-        // document.getElementById('me').style.height = ''
-        // document.getElementById('me').style.top = ''
-        // document.getElementById('me').style.borderRadius = ''
-        // document.getElementById('me').style.border = ''
+        if ($(`#${window.offerer}`).offset().top === 86) {
+          document.getElementById(window.offerer).style.top = '9px'
+          document.getElementById(window.offerer).style.width = '338px'
+          document.getElementById(window.offerer).style.height = '538px'
+          document.getElementById(window.offerer).style.objectFit = 'cover'
+          document.getElementById(window.offerer).style.backgroundImage = 'none'
+          document.getElementById(window.offerer).style.borderRadius = '3px'
+          document.getElementById('me').style.top = '483px'
+          document.getElementById('end-call').style.marginTop = '570px'
+          document.getElementById('enlarge').style.marginTop = '40px'
+          document.getElementById('enlarge').style.marginLeft = '120px'
+          $('#enlarge').find('img').attr('src', 'shrink.svg')
+        } else {
+          document.getElementById(window.offerer).style.top = '86px'
+          document.getElementById(window.offerer).style.width = '290px'
+          document.getElementById(window.offerer).style.height = '290px'
+          document.getElementById(window.offerer).style.objectFit = 'contain'
+          document.getElementById(window.offerer).style.backgroundImage = 'url("video-background.png")'
+          document.getElementById(window.offerer).style.borderRadius = '100%'
+          document.getElementById('me').style.top = '343px'
+          document.getElementById('end-call').style.marginTop = '430px'
+          document.getElementById('enlarge').style.marginTop = '80px'
+          document.getElementById('enlarge').style.marginLeft = '80px'
+          $('#enlarge').find('img').attr('src', 'enlarge.svg')
+        }
+
       }
       document.body.appendChild(button)
     }
+    function callRequest() {
+      if (window.offerer) {
+        if (!document.getElementById(window.offerer)) peer.sendParticipationRequest(window.offerer)
+      }
+      document.getElementById('pop-up').style.opacity = '0.4'
+      document.body.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'
+      var text = $('#m').val()
+      text = text + '⍄' + peer.userid
+      $('#m').val(text)
+      $('form').submit()
+      document.getElementById('answer').remove()
+    }
     var peer = new PeerConnection('http://localhost:8989')
     peer.onStreamAdded = function(e) {
+      if (document.getElementById('pop-up').style.opacity !== '0.4') {
+        var button = document.createElement('button')
+        button.id = 'answer'
+        var img = document.createElement('img')
+        img.src = 'answer_call.svg'
+        img.width = '190'
+        img.height = '38'
+        button.appendChild(img)
+        button.onclick = callRequest
+        document.body.appendChild(button)
+      }
       if (e.participantid) {
         renderEndButton()
         renderEnlargeButton()
